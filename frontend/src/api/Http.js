@@ -1,7 +1,10 @@
 import axios from "axios";
 
+// Use environment variable if provided (configured in Vercel), fallback to local dev.
+const baseURL = import.meta.env.VITE_API_BASE || "http://localhost:5000/api/v1";
+
 const http = axios.create({
-  baseURL: "http://localhost:5000/api/v1",
+  baseURL,
 });
 
 http.interceptors.request.use((config) => {
@@ -11,3 +14,8 @@ http.interceptors.request.use((config) => {
 });
 
 export default http;
+
+// Helpful runtime log (can remove in prod build):
+if (import.meta.env.DEV) {
+  console.log("API base URL:", baseURL);
+}
