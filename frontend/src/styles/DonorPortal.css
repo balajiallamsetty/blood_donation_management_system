@@ -1,0 +1,304 @@
+/* ===== Global Layout ===== */
+.donor-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #fff6f7, #f9f9f9);
+  padding: 50px 20px;
+  font-family: "Poppins", "Inter", sans-serif;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ===== Header ===== */
+.header {
+  text-align: left;
+  margin-bottom: 40px;
+  padding-left: 4px;
+}
+
+.header h1 {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #e63946;
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+
+.header p {
+  color: #666;
+  font-size: 1rem;
+}
+
+/* ===== Grid Layout ===== */
+.grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 28px;
+}
+
+@media (max-width: 992px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== Card Enhancements ===== */
+.card,
+.profile-card,
+.history-card,
+.alerts-card {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(6px);
+  transition: all 0.3s ease;
+}
+
+.card:hover,
+.profile-card:hover,
+.history-card:hover,
+.alerts-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(230, 57, 70, 0.12);
+}
+
+/* ===== Profile Section ===== */
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(90deg, #ffe5e5, #ffd6d9);
+  color: #e63946;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+
+.icon {
+  color: #e63946;
+  font-size: 1rem;
+}
+
+/* ===== Stats Section ===== */
+.stats-section {
+  margin-top: 30px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+}
+
+.stats-grid .card {
+  text-align: center;
+  background: linear-gradient(145deg, #ffffff, #fff3f3);
+  border: 1px solid #ffe2e2;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #e63946;
+}
+
+.stat-label {
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 6px;
+}
+
+/* ===== Alerts Section ===== */
+.alerts-card {
+  padding: 2px;
+}
+
+.alerts-title {
+  display: flex;
+  align-items: center;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #222;
+}
+
+.badge-dot {
+  margin-left: 8px;
+  background: #e63946;
+  color: #fff;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 0.8rem;
+}
+
+.alerts-list {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.alert-item {
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid #eee;
+  background: #fff;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s ease;
+}
+
+.alert-item.unread {
+  border-color: #ffc6ca;
+  background: linear-gradient(180deg, #fff9f9, #fff);
+}
+
+.alert-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(230, 57, 70, 0.1);
+}
+
+.alert-top {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #777;
+  margin-bottom: 6px;
+}
+
+.alert-type {
+  font-weight: 600;
+  color: #e63946;
+  text-transform: capitalize;
+}
+
+.alert-body {
+  font-size: 0.95rem;
+  color: #333;
+  line-height: 1.4;
+}
+
+.alert-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+/* ===== Donation History Table ===== */
+.history-card {
+  margin-top: 24px;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.history-table th,
+.history-table td {
+  text-align: left;
+  padding: 12px 14px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.history-table th {
+  background: linear-gradient(135deg, #fff1f1, #ffe7e7);
+  color: #444;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.history-table tr:hover {
+  background-color: #fff6f6;
+  transition: 0.2s;
+}
+
+.chip {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.chip.completed {
+  background: #e8f6ee;
+  color: #1a7a40;
+}
+
+.chip.pending {
+  background: #fff6e0;
+  color: #9a6b00;
+}
+
+.chip.cancelled {
+  background: #ffe8eb;
+  color: #a32632;
+}
+
+/* ===== Alert Banner ===== */
+.alert-container {
+  margin: 10px 0 20px;
+  animation: fadeIn 0.4s ease;
+}
+
+/* ===== Animations ===== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Inline fields utility (moved out of keyframes) */
+.inline-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+/* ===== Responsive Tweaks ===== */
+@media (max-width: 768px) {
+  .header h1 {
+    font-size: 1.8rem;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+  }
+
+  .history-table th,
+  .history-table td {
+    padding: 10px;
+    font-size: 0.85rem;
+  }
+
+  .alert-body {
+    font-size: 0.9rem;
+  }
+}

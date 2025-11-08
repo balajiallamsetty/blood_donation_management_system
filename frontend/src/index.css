@@ -1,0 +1,73 @@
+@import './styles/theme.css';
+
+/* Global color palette variables (fallbacks if theme.css missing some) */
+:root {
+  --color-primary: #e63946;
+  --color-primary-hover: #c92d3a;
+  --color-danger: #b91c1c;
+  --color-danger-hover: #991b1b;
+  --color-neutral-bg: #f1f5f9;
+  --color-neutral-bg-hover: #e2e8f0;
+  --color-neutral-text: #374151;
+  --color-border-strong: #e2e8f0;
+}
+
+/* Base reset and typography */
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+html { font-size: 100%; }
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  line-height: var(--line-height);
+  color: var(--color-text);
+  background: var(--color-bg-soft);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Links */
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+a:focus-visible { outline: 3px solid rgba(230,57,70,0.35); outline-offset: 2px; }
+
+/* Headings */
+h1 { font-size: var(--font-size-h1); line-height: 1.2; margin: 0 0 var(--space-4); }
+h2 { font-size: var(--font-size-h2); line-height: 1.25; margin: 0 0 var(--space-4); }
+h3 { font-size: var(--font-size-h3); line-height: 1.3; margin: 0 0 var(--space-3); }
+
+/* Container utility */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Buttons (baseline for native <button>) */
+button {
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  padding: 10px 16px;
+  font-size: 1rem;
+  background-color: #fff;
+  cursor: pointer;
+  transition: box-shadow .2s ease, transform .06s ease;
+}
+button:hover { box-shadow: var(--shadow-sm); }
+button:active { transform: translateY(1px); }
+button:focus-visible { outline: 3px solid rgba(230,57,70,0.35); outline-offset: 2px; }
+
+/* Images */
+img { max-width: 100%; height: auto; display: block; }
+
+/* Utilities */
+.text-center { text-align: center; }
+.hidden { display: none !important; }
+
+/* Desktop spacing tweaks */
+@media (min-width: 1200px) {
+  :root { --font-size-base: 17px; }
+}

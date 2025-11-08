@@ -1,0 +1,144 @@
+/* Base button styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+  user-select: none;
+  line-height: 1;
+}
+
+/* Better accessibility focus outline */
+.btn:focus-visible {
+  outline: 2px solid #94a3b8; /* slate-400 */
+  outline-offset: 2px;
+}
+
+/* Size variants */
+.btn-default {
+  height: 40px;
+  padding: 8px 16px;
+}
+
+/* Alias for medium size if needed by other components */
+.btn-md {
+  height: 40px;
+  padding: 8px 16px;
+}
+
+.btn-sm {
+  height: 36px;
+  padding: 6px 12px;
+  font-size: 13px;
+}
+
+.btn-lg {
+  height: 44px;
+  padding: 10px 24px;
+  font-size: 15px;
+}
+
+.btn-icon {
+  height: 40px;
+  width: 40px;
+  padding: 0;
+}
+
+/* Variant styles */
+.btn-default {
+  background-color: #e63946;
+  color: #fff;
+}
+
+/* Neutral (non-attention) actions */
+.btn-neutral {
+  background-color: #f1f5f9; /* slate-100 */
+  color: #374151; /* gray-700 */
+  border: 1px solid #e2e8f0; /* slate-200 */
+}
+.btn-neutral:hover {
+  background-color: #e2e8f0;
+}
+
+.btn-default:hover {
+  background-color: #c92d3a;
+}
+
+.btn-destructive {
+  background-color: #b91c1c;
+  color: #fff;
+}
+
+.btn-destructive:hover {
+  background-color: #991b1b;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid #e63946;
+  color: #e63946;
+}
+
+.btn-outline:hover {
+  background-color: #e63946;
+  color: #fff;
+}
+
+.btn-secondary {
+  background-color: #6b7280;
+  color: #fff;
+}
+
+.btn-secondary:hover {
+  background-color: #4b5563;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: #333;
+}
+
+.btn-ghost:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.btn-link {
+  background: none;
+  color: #e63946;
+  text-decoration: underline;
+  padding: 0;
+  height: auto;
+}
+
+/* Disabled state */
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Ensure hover styles don't apply when disabled */
+.btn:disabled:hover,
+.btn[aria-disabled="true"]:hover {
+  background-color: inherit;
+  color: inherit;
+  transform: none;
+  box-shadow: none;
+}
+
+/* High-contrast focus for outline variant */
+.btn-outline:focus-visible {
+  box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.25);
+}
+
+/* Reduce motion for users preferring less animation */
+@media (prefers-reduced-motion: reduce) {
+  .btn {
+    transition: none;
+  }
+}

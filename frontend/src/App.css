@@ -1,0 +1,2 @@
+/* Remove Vite demo styles; keep root neutral to allow full-width sections */
+#root { min-height: 100%; }
