@@ -12,7 +12,23 @@ const app = express();
 // ================================
 // ✅ Middleware
 // ================================
-app.use(cors());
+// CORS: In production, optionally restrict to configured origins (comma-separated)
+const isProd = process.env.NODE_ENV === "production";
+const allowedOrigins = (process.env.CORS_ORIGIN || "")
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
+
+if (isProd && allowedOrigins.length) {
+  app.use(
+    cors({
+      origin: allowedOrigins,
+      credentials: true,
+    })
+  );
+} else {
+  app.use(cors());
+}
 app.use(express.json());
 app.use(morgan("dev"));
 

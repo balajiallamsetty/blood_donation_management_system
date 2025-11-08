@@ -19,6 +19,7 @@ const userSchema = new mongoose.Schema({
 
 // Indexes for faster admin queries
 userSchema.index({ role: 1, isVerified: 1 });
-userSchema.index({ email: 1 });
+// Note: `unique: true` on the email path already creates a unique index.
+// Avoid declaring a duplicate simple index on { email: 1 } to prevent Mongoose warnings.
 
 module.exports = mongoose.model('User', userSchema);
