@@ -14,9 +14,29 @@ const app = express();
 // ================================
 // CORS: In production, optionally restrict to configured origins (comma-separated)
 const isProd = process.env.NODE_ENV === "production";
-const allowedOrigins = (process.env.CORS_ORIGIN || "")
+// Read comma-separated origins and normalize them to canonical origins
+// (strip any path like `/api/v1` if the value contains it).
+const rawOrigins = process.env.CORS_ORIGIN || "";
+const allowedOrigins = rawOrigins
   .split(",")
   .map((s) => s.trim())
+  .filter(Boolean)
+  .map((entry) => {
+    try {
+      // If the entry is a full URL (may include path), extract the origin
+      const parsed = new URL(entry);
+      return parsed.origin;
+    } catch (_e) {
+      // If it's not a full URL, attempt to treat as host (with scheme)
+      try {
+        const parsed = new URL(`https://${entry}`);
+        return parsed.origin;
+      } catch (__e) {
+        // Fallback to the raw entry (best-effort)
+        return entry;
+      }
+    }
+  })
   .filter(Boolean);
 
 if (isProd && allowedOrigins.length) {
