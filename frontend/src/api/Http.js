@@ -1,7 +1,6 @@
 import axios from "axios";
 
-// Use environment variable if provided (configured in Vercel), fallback to local dev.
-const baseURL = import.meta.env.VITE_API_BASE || "http://localhost:5000/api/v1";
+const baseURL = import.meta.env.VITE_API_BASE || "https://blood-donation-management-system-w5tr.onrender.com";
 
 const http = axios.create({
   baseURL,
