@@ -32,7 +32,10 @@ const RequestsList2 = () => {
     // Subscribe to SSE for real-time updates
     let es;
     try {
-      const base = http?.defaults?.baseURL?.replace(/\/$/, "") || "http://localhost:5000/api/v1";
+      // Prefer the axios instance baseURL, then Vite env, then localhost fallback.
+      const base =
+        (http && http.defaults && http.defaults.baseURL && http.defaults.baseURL.replace(/\/$/, "")) ||
+        (import.meta.env.VITE_API_BASE || "http://localhost:5000/api/v1");
       es = new EventSource(`${base}/requests/stream`);
       es.onmessage = (e) => {
         try {
