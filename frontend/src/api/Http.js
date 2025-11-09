@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = import.meta.env.VITE_API_BASE || "https://blood-donation-management-system-w5tr.onrender.com";
+const baseURL = import.meta.env.VITE_API_BASE || "http://localhost:5000/api/v1";
 
 const http = axios.create({
   baseURL,
