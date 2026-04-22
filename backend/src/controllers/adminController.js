@@ -13,6 +13,7 @@ const sendHospitalCredentialsEmail = async ({ name, email, password }) => {
     EMAILJS_USER_ID,
     EMAILJS_PRIVATE_KEY,
     EMAILJS_ACCESS_TOKEN,
+    EMAIL_FROM,
   } = process.env;
 
   const publicKey = EMAILJS_PUBLIC_KEY || EMAILJS_USER_ID;
@@ -27,7 +28,13 @@ const sendHospitalCredentialsEmail = async ({ name, email, password }) => {
     template_id: EMAILJS_TEMPLATE_ID,
     user_id: publicKey,
     template_params: {
+      subject: `Hospital credentials for ${name}`,
+      message: `Hospital name: ${name}\nLogin email: ${email}\nTemporary password: ${password}`,
+      from_name: 'Blood Donation Platform',
+      from_email: EMAIL_FROM || 'no-reply@example.com',
       hospital_name: name,
+      name,
+      title: 'Hospital Credentials',
       to_name: name,
       to_email: email,
       login_email: email,
