@@ -1,13 +1,70 @@
 // backend/src/controllers/adminController.js
 const bcrypt = require('bcryptjs');
-const sgMail = require('@sendgrid/mail');
 const Hospital = require('../models/Hospital');
 const User = require('../models/User');
 const Donation = require('../models/Donation');
 const Request = require('../models/Request');
 
-// ✅ Initialize Twilio SendGrid
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const sendHospitalCredentialsEmail = async ({ name, email, password }) => {
+  const {
+    EMAILJS_SERVICE_ID,
+    EMAILJS_TEMPLATE_ID,
+    EMAILJS_PUBLIC_KEY,
+    EMAILJS_USER_ID,
+    EMAILJS_PRIVATE_KEY,
+    EMAILJS_ACCESS_TOKEN,
+  } = process.env;
+
+  const publicKey = EMAILJS_PUBLIC_KEY || EMAILJS_USER_ID;
+  const privateKey = EMAILJS_PRIVATE_KEY || EMAILJS_ACCESS_TOKEN;
+
+  if (!EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID || !publicKey) {
+    throw new Error('Missing EmailJS configuration: EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID and EMAILJS_PUBLIC_KEY are required.');
+  }
+
+  const payload = {
+    service_id: EMAILJS_SERVICE_ID,
+    template_id: EMAILJS_TEMPLATE_ID,
+    user_id: publicKey,
+    template_params: {
+      hospital_name: name,
+      to_name: name,
+      to_email: email,
+      login_email: email,
+      temporary_password: password,
+      app_name: 'Blood Donation Platform',
+      support_email: process.env.EMAIL_FROM || 'no-reply@example.com',
+    },
+  };
+
+  if (privateKey) payload.accessToken = privateKey;
+
+  const maxAttempts = 3;
+  let lastError = null;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (response.ok) return;
+
+      const errorBody = await response.text();
+      throw new Error(`EmailJS send failed (${response.status}): ${errorBody}`);
+    } catch (err) {
+      lastError = err;
+      if (attempt < maxAttempts) {
+        // Retry transient failures before giving up.
+        await new Promise((resolve) => setTimeout(resolve, attempt * 500));
+      }
+    }
+  }
+
+  throw lastError || new Error('EmailJS send failed after retries.');
+};
 
 // 🩸 Get all hospitals (Admin Dashboard)
 exports.getHospitals = async (req, res) => {
@@ -83,64 +140,13 @@ exports.createHospital = async (req, res) => {
       verified: true,
     });
 
-    // 📧 Compose SendGrid email (spam-safe version)
-    const msg = {
-      to: { email, name },
-      from: { email: process.env.EMAIL_FROM, name: 'Blood Donation' }, // friendly display name
-      replyTo: process.env.EMAIL_FROM,
-      subject: 'Your Hospital Account is Ready',
-      text: `Hi ${name},
-
-Your hospital account has been created successfully.
-
-Login Email: ${email}
-Temporary Password: ${password}
-
-Please sign in and change your password immediately.
-
-— Blood Donation Team`,
-      html: `
-        <div style="font-family:system-ui,Segoe UI,Arial,sans-serif;line-height:1.6">
-          <h2 style="color:#c00;">Welcome to Blood Donation Platform</h2>
-          <p>Dear <strong>${name}</strong>,</p>
-          <p>Your hospital account has been successfully created by the admin.</p>
-          <p><strong>Login Credentials:</strong></p>
-          <ul>
-            <li><b>Email:</b> ${email}</li>
-            <li><b>Password:</b> ${password}</li>
-          </ul>
-          <p>Please sign in and change your password immediately for your security.</p>
-          <a href="https://your-frontend-login-url.com" 
-             style="display:inline-block;margin-top:12px;padding:10px 16px;
-                    background-color:#c00;color:#fff;text-decoration:none;
-                    border-radius:6px;font-weight:600;">
-            Login Now
-          </a>
-          <p style="color:#777;margin-top:16px;font-size:0.9rem;">
-            If you didn’t request this, please ignore this email or reply to let us know.
-          </p>
-          <p>— Blood Donation Team</p>
-        </div>
-      `,
-      categories: ['transactional', 'hospital-onboarding'],
-      trackingSettings: {
-        clickTracking: { enable: false, enableText: false },
-        openTracking: { enable: false },
-      },
-      mailSettings: {
-        bypassListManagement: { enable: true }, // ensures it's treated as transactional
-      },
-    };
-
-    // ✅ Send email via Twilio SendGrid
-    let emailSent = false;
-    let emailError = null;
+    // ✅ Send email via EmailJS
     try {
-      await sgMail.send(msg);
-      console.log('📧 Email sent successfully via SendGrid');
+      await sendHospitalCredentialsEmail({ name, email, password });
+      console.log('📧 Email sent successfully via EmailJS');
       emailSent = true;
     } catch (err) {
-      console.error('❌ Error sending email via SendGrid:', err.response ? err.response.body : err);
+      console.error('❌ Error sending email via EmailJS:', err.message || err);
       emailError = err.message;
     }
 
