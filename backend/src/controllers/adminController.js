@@ -141,6 +141,8 @@ exports.createHospital = async (req, res) => {
     });
 
     // ✅ Send email via EmailJS
+    let emailSent = false;
+    let emailError = null;
     try {
       await sendHospitalCredentialsEmail({ name, email, password });
       console.log('📧 Email sent successfully via EmailJS');
