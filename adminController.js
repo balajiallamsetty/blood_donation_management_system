@@ -10,17 +10,22 @@ const sendHospitalCredentialsEmail = async ({ name, email, password }) => {
     EMAILJS_SERVICE_ID,
     EMAILJS_TEMPLATE_ID,
     EMAILJS_PUBLIC_KEY,
+    EMAILJS_USER_ID,
     EMAILJS_PRIVATE_KEY,
+    EMAILJS_ACCESS_TOKEN,
   } = process.env;
 
-  if (!EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID || !EMAILJS_PUBLIC_KEY) {
+  const publicKey = EMAILJS_PUBLIC_KEY || EMAILJS_USER_ID;
+  const privateKey = EMAILJS_PRIVATE_KEY || EMAILJS_ACCESS_TOKEN;
+
+  if (!EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID || !publicKey) {
     throw new Error('Missing EmailJS configuration: EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID and EMAILJS_PUBLIC_KEY are required.');
   }
 
   const payload = {
     service_id: EMAILJS_SERVICE_ID,
     template_id: EMAILJS_TEMPLATE_ID,
-    user_id: EMAILJS_PUBLIC_KEY,
+    user_id: publicKey,
     template_params: {
       hospital_name: name,
       to_name: name,
@@ -32,18 +37,33 @@ const sendHospitalCredentialsEmail = async ({ name, email, password }) => {
     },
   };
 
-  if (EMAILJS_PRIVATE_KEY) payload.accessToken = EMAILJS_PRIVATE_KEY;
+  if (privateKey) payload.accessToken = privateKey;
 
-  const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
+  const maxAttempts = 3;
+  let lastError = null;
 
-  if (!response.ok) {
-    const errorBody = await response.text();
-    throw new Error(`EmailJS send failed (${response.status}): ${errorBody}`);
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (response.ok) return;
+
+      const errorBody = await response.text();
+      throw new Error(`EmailJS send failed (${response.status}): ${errorBody}`);
+    } catch (err) {
+      lastError = err;
+      if (attempt < maxAttempts) {
+        // Retry transient failures before giving up.
+        await new Promise((resolve) => setTimeout(resolve, attempt * 500));
+      }
+    }
   }
+
+  throw lastError || new Error('EmailJS send failed after retries.');
 };
 
 // 🩸 Get all hospitals (Admin Dashboard)
@@ -121,8 +141,6 @@ exports.createHospital = async (req, res) => {
     });
 
     // ✅ Send email via EmailJS
-    let emailSent = false;
-    let emailError = null;
     try {
       await sendHospitalCredentialsEmail({ name, email, password });
       console.log('📧 Email sent successfully via EmailJS');
